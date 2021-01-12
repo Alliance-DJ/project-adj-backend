@@ -11,7 +11,7 @@ func main() {
 }
 
 func runSocket() {
-	url := "127.0.0.1:9999"
+	url := "127.0.0.1:15977"
 	fmt.Println("listen on: ", url)
 
 	ln, err := net.Listen("tcp", url)
