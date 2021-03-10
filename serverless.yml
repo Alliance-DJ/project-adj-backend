@@ -1,0 +1,36 @@
+service: project-adj
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  profile: personal
+  environment:
+    STAGE: ${opt:stage, self:provider.stage}
+    PROFILE: ${opt:profile, self:provider.profile}
+
+      
+functions:
+  v1:
+    handler: index.pinball
+    memorySize: 1024
+    timeout: 20
+    events:
+      - http:
+          method: any
+          path: v1/
+          cors: true
+      - http:
+          method: any
+          path: v1/{proxy+}
+          cors: true
+
+package:
+  excludeDevDependencies: true
+  exclude:
+    - tool/**
+    - doc/**
+    
+plugins:
+  - serverless-plugin-typescript
+  - serverless-offline       
+  - serverless-prune-plugin

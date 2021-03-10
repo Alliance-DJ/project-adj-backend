@@ -1,0 +1,52 @@
+{
+  "name": "project-adj",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "local-dev": "sls offline start --stage dev --region ap-northeast-2 --port 3001 ",
+    "local-prod": "sls offline start --stage prod --region ap-southeast-1 --port 3001 ",
+    "deploy-dev": "sls deploy --region ap-northeast-2 --stage dev ",
+    "deploy-prod": "sls deploy --region ap-southeast-1 --stage prod "
+  },
+  "keywords": [],
+  "author": "",
+  "dependencies": {
+    "@types/chai": "^4.2.14",
+    "@types/mocha": "^8.0.4",
+    "axios": "^0.20.0",
+    "bluebird": "^3.7.2",
+    "body-parser": "^1.19.0",
+    "class-validator": "^0.12.2",
+    "cors": "^2.8.5",
+    "crypto-js": "^4.0.0",
+    "express": "^4.17.1",
+    "lodash": "^4.17.20",
+    "moment": "^2.24.0",
+    "pg": "^8.4.1",
+    "serverless-http": "^2.3.0",
+    "socket.io": "^3.1.2",
+    "sql": "^0.78.0",
+    "ts-node": "^8.10.1",
+    "typescript": "^3.9.5",
+    "typescript-sql": "^0.0.2",
+    "uuid": "^8.3.1"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.6",
+    "@types/express": "^4.17.2",
+    "@types/node": "^13.5.3",
+    "@types/puppeteer": "^3.0.1",
+    "@typescript-eslint/eslint-plugin": "^2.16.0",
+    "@typescript-eslint/parser": "^2.16.0",
+    "eslint": "^5.12.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.14.0",
+    "mocha": "^8.2.1",
+    "serverless-offline": "^5.12.1",
+    "serverless-plugin-typescript": "^1.1.9",
+    "serverless-prune-plugin": "^1.4.0",
+    "supertest": "^6.0.1"
+  },
+  "license": "MIT"
+}

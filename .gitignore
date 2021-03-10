@@ -1,0 +1,27 @@
+.DS_Store
+node_modules/
+/dist/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+/test/e2e/reports/
+selenium-debug.log
+deploy/.gitignore
+deploy/.elasticbeanstalk
+/.build
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+.serverless/
+
+translation/output.xlsx
+push.sh
+yarn.lock
+test/
+/api/test.http

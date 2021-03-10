@@ -1,0 +1,8 @@
+@endpoint = http://localhost:3001
+
+@contentType = application/json
+
+
+### exam
+GET {{endpoint}}/v1/exam HTTP/1.1
+content-type: {{contentType}}
