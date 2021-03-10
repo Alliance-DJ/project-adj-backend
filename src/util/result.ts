@@ -46,8 +46,8 @@ const fnResult = async (req: any, res: any) => {
   }
 
 
-  await req.db.release(true)
-  await req.db.end()
+  // await req.db.release(true)
+  // await req.db.end()
 
   res.json(result)
 }

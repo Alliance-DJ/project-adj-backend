@@ -30,6 +30,6 @@ if (config.env === 'dev' || config.env === 'prod') {
 }
 
 router.route('/exam')
-  .post(cors(corsOpt), db.db, v1Exam.exam, result.fnResult)
+  .get(cors(corsOpt), v1Exam.exam, result.fnResult)
 
 export = router;
