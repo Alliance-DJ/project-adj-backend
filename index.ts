@@ -1,13 +1,21 @@
-import serverless from 'serverless-http'
-import bodyParser from 'body-parser'
-import express from 'express'
-import cors from 'cors'
+import client from 'socket.io-client'
 
-import routesV1 from './src/router/router.v1'
+const socket = client.io('ws://localhost:4001')
 
-const appV1 = express()
-appV1.use(cors());
-appV1.use(bodyParser.json({ strict: true }))
-appV1.use(bodyParser.urlencoded({ extended: true }))
-appV1.use('/v1', routesV1)
-module.exports.pinball = serverless(appV1)
+socket.emit('join', {})
+
+// let cnt = 0
+// setInterval(() => {
+//   socket.emit('chat', cnt)
+//   cnt++
+// }, 3000)
+
+// socket.on('chat', (data) => {
+//   // if(socket.id !== data.sender) {
+//   //   console.log(data)
+//   // }
+//   console.log(data)
+// })
+socket.on('stateUpdate', (data) => {
+  console.log(data)
+})
