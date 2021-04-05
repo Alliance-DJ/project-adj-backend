@@ -16,7 +16,7 @@ httpServer.listen(4001, () => {
   console.log('listen on 4001')
 })
 
-const gameServer = new GameServer()
+const gameServer = GameServer.getInstance()
 gameServer.startup(io)
 
 io.on('connection', (socket) => {
@@ -31,43 +31,30 @@ const connectionHandler = (socket: socketio.Socket) => {
   socket.on('disconnect', (reason) => {
     console.log(`${socket.id} has leaved: (${reason})`)
 
-    gameServer.leaveGame(socket)
-
-    socket.broadcast.emit('leaveUser', socket.id)
+    gameServer.leave(socket)
   })
 
-  // join game
-  socket.on('join', () => {
-    const ball = gameServer.joinGame(socket)
-
-    socket.emit('joinUser', {
-      id: ball.id,
-      x: ball.posX,
-      y: ball.posY,
-      color: ball.color
-    })
-
-    socket.broadcast.emit('joinUser', {
-      id: socket.id,
-      x: ball.posX,
-      y: ball.posY,
-      color: ball.color
-    })
+  // login
+  socket.on('login', (nickname) => {
+    gameServer.login(socket, nickname)
   })
 
   // leave game
   socket.on('leave', () => {
-    gameServer.leaveGame(socket)
-
-    socket.broadcast.emit('leaveUser', socket.id)
+    console.log(`${socket.id} has leaved: (logout)`)
+    gameServer.leave(socket)
   })
 
+
+  // join matching queue
+  socket.on('matchMaking', () => {
+    gameServer.joinMatchQueue(socket)
+  })
+
+  
   // update ball velocity
-  socket.on('move', () => {
+  socket.on('gamePlay', (data) => {
     
   })
   
 }
-
-
-// gameServer.broadcaseVelocity()
