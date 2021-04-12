@@ -15,4 +15,12 @@ export default class Client {
   get id() {
     return this.socket.id
   }
+
+  increseCoin(amount) {
+    this.coin += amount
+  }
+  
+  decraseCoin(amount) {
+    this.coin -= amount
+  }
 }

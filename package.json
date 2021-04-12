@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "local-dev": "ts-node ./src/socketHandler.ts"
+    "local": "ts-node ./src/socketHandler.ts"
   },
   "author": "",
   "license": "ISC",

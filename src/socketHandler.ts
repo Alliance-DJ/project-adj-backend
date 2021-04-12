@@ -53,8 +53,8 @@ const connectionHandler = (socket: socketio.Socket) => {
 
   
   // update ball velocity
-  socket.on('gamePlay', (data) => {
-    
+  socket.on('gamePlay', (packet) => {
+    gameServer.gamePlay(socket, packet)
   })
   
 }

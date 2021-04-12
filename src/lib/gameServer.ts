@@ -28,7 +28,7 @@ export default class GameServer {
   }
 
   // login on game
-  public login(socket, nickname) {
+  login(socket, nickname) {
     const client = new Client(socket, nickname)
     
     this.clients[socket.id] = client
@@ -37,7 +37,7 @@ export default class GameServer {
   }
 
   // leave the game
-  public leave(socket) {
+  leave(socket) {
     // matching cancle
     for (let i = 0; i < this.matchQueue.length; i += 1) {
       if (this.matchQueue[i].socket.id === socket.id) {
@@ -49,14 +49,14 @@ export default class GameServer {
   }
 
   // matching join
-  public joinMatchQueue(socket) {
+  joinMatchQueue(socket) {
     const user = this.clients[socket.id]
 
     this.matchQueue.push(user)
   }
 
   // update matching
-  public updateMatchMaking() {
+  updateMatchMaking() {
     const matchedGroupCnt = this.matchQueue.length / 2
     for (let i = 0; i < matchedGroupCnt; i += 1) {
       const matchedGroup = this.matchQueue.splice(0, 2)
@@ -75,18 +75,18 @@ export default class GameServer {
     }
   }
 
-  public removeRoom(roomCode) {
+  removeRoom(roomCode) {
     delete this.rooms[roomCode]
   }
 
-  public gamePlay(packet) {
+  gamePlay(socket, packet) {
     if (!_.hasIn(this.rooms, packet.roomCode)) {
       return
     }
-    this.rooms[packet.roomCode].packetParser(packet)
+    this.rooms[packet.roomCode].packetParser(socket, packet)
   }
 
-  public startup(io) {
+  startup(io) {
     // broadcast balls state
     setInterval(() => this.updateMatchMaking(), 100)
   }
