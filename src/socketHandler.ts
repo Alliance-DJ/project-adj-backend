@@ -51,8 +51,12 @@ const connectionHandler = (socket: socketio.Socket) => {
     gameServer.joinMatchQueue(socket)
   })
 
-  
-  // update ball velocity
+  socket.on('getUser', () => {
+    gameServer.getUser(socket)
+  })
+
+
+  // game play packet send
   socket.on('gamePlay', (packet) => {
     gameServer.gamePlay(socket, packet)
   })

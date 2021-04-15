@@ -132,7 +132,7 @@ export default class GameRoom {
 
     // check game finish
     if (this.players[loserId].chip <= 0) {
-      this.gameFinish()
+      this.gameFinish(winnerId)
     }
 
     this.startNextRound()
@@ -173,7 +173,16 @@ export default class GameRoom {
     }
   }
 
-  gameFinish() {
+  gameFinish(winnerId) {
+    // calculate player coin
+    for (const player of this.clients) {
+      if (player.id === winnerId) {
+        player.increseCoin(100)
+      } else {
+        player.decraseCoin(100)
+      }
+    }
+
     // finish packet send
     const packet = new gamePacket(this, ROOM_STATE_CODE.FINISH)
     for (const playerId of Object.keys(this.players)) {

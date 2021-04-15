@@ -86,8 +86,13 @@ export default class GameServer {
     this.rooms[packet.roomCode].packetParser(socket, packet)
   }
 
+  getUser(socket) {
+    socket.emit('user', this.clients[socket.id].getUser())
+  }
+
   startup(io) {
     // broadcast balls state
     setInterval(() => this.updateMatchMaking(), 100)
   }
+  
 }

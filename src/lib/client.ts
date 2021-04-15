@@ -11,6 +11,13 @@ export default class Client {
     this.nickname = nickname
   }
 
+  getUser() {
+    const response = {
+      nickname: this.nickname,
+      coin: this.coin,
+    }
+    return response
+  }
 
   get id() {
     return this.socket.id
