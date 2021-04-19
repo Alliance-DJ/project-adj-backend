@@ -5,6 +5,7 @@ import Player from './player'
 import GameServer from './gameServer'
 
 import { clientPacket, gamePacket, errorPacket, playPacket, resultPacket } from '../model/packet'
+import { CLIENT_STATE } from './client'
 
 enum ACTION_TYPE {
   BETTING = 'betting',
@@ -54,7 +55,10 @@ export default class GameRoom {
   turnLeftTime: number
   timerUpdateTime: number
   isPacketRecieved: boolean
+ 
+  // scheduler
   timerTick: any
+  stateTick: any
 
   constructor(roomCode, clients) {
     this.gameServer = GameServer.getInstance()
@@ -83,6 +87,8 @@ export default class GameRoom {
     for (const playerId of Object.keys(this.players)) {
       this.sendPacket(playerId, SOCKET_CHANNEL.GAME, packet)
     }
+
+    this.stateTick = setInterval(() => this.stateHeartbeat(), 100)
   }
 
 
@@ -181,6 +187,8 @@ export default class GameRoom {
       } else {
         player.decraseCoin(100)
       }
+      
+      player.state = CLIENT_STATE.IDLE
     }
 
     // finish packet send
@@ -188,6 +196,9 @@ export default class GameRoom {
     for (const playerId of Object.keys(this.players)) {
       this.sendPacket(playerId, SOCKET_CHANNEL.GAME, packet)
     }
+
+    // stop state heartbeat
+    clearInterval(this.stateTick)
 
     // remove this room
     this.gameServer.removeRoom(this.roomCode)
@@ -268,9 +279,6 @@ export default class GameRoom {
 
   // PACKET //
   packetParser(socket, packet: clientPacket) {
-    // increase packet state code
-    this.stateCode += 1
-
     // client not included in this room
     const senderIdx = _.findIndex(this.clients, ['id', socket.id])
     if (senderIdx === -1) {
@@ -286,6 +294,9 @@ export default class GameRoom {
       this.sendPacket(socket.id, SOCKET_CHANNEL.ERROR , packet)
       return
     }
+
+    // increase packet state code
+    this.stateCode += 1
 
     // ready for play game
     if (packet.type === 'ready') {
@@ -313,6 +324,12 @@ export default class GameRoom {
 
   sendPacket(playerId, channel, packet) {
     this.players[playerId].client.socket.emit(channel, packet)
+  }
+
+  stateHeartbeat() {
+    for (const client of this.clients) {
+      client.socket.emit('stateHeartbeat', this.stateCode)
+    }
   }
 
 

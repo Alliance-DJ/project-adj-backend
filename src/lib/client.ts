@@ -1,14 +1,23 @@
 import { Socket } from "socket.io"
 
+enum CLIENT_STATE {
+  IDLE = 'idle',
+  MATCHING = 'matching',
+  PLAYING = 'playing',
+}
+
 export default class Client {
   socket: Socket
-  // player position
+
   nickname: string
   coin: number
+
+  state: CLIENT_STATE
 
   constructor(socket, nickname) {
     this.socket = socket
     this.nickname = nickname
+    this.state = CLIENT_STATE.IDLE
   }
 
   getUser() {
@@ -30,4 +39,8 @@ export default class Client {
   decraseCoin(amount) {
     this.coin -= amount
   }
+}
+
+export {
+  CLIENT_STATE
 }

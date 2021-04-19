@@ -4,6 +4,9 @@ import uuid from 'uuid'
 import Client from './client'
 import GameRoom from './gameRoom'
 
+import { CLIENT_STATE } from './client'
+
+
 export default class GameServer {
   private static singleton: GameServer
 
@@ -50,6 +53,12 @@ export default class GameServer {
 
   // matching join
   joinMatchQueue(socket) {
+    if (this.clients[socket.id].state !== CLIENT_STATE.IDLE) {
+      socket.emit('serverError', 'ERROR: already started game')
+      return
+    }
+
+    this.clients[socket.id].state = CLIENT_STATE.MATCHING
     const user = this.clients[socket.id]
 
     this.matchQueue.push(user)
@@ -70,6 +79,8 @@ export default class GameServer {
         clients: matchedGroup,
       }
       for (const client of matchedGroup) {
+        client.state = CLIENT_STATE.PLAYING
+
         client.socket.emit('matched', data)
       }
     }
