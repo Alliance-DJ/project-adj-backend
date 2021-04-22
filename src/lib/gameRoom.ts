@@ -64,6 +64,7 @@ export default class GameRoom {
     this.gameServer = GameServer.getInstance()
 
     this.clients = clients
+    this.players = {}
     this.initPlayers(this.clients)
 
     this.roomCode = roomCode
@@ -250,7 +251,6 @@ export default class GameRoom {
 
   die(sender) {
     // turn check
-    
     if (this.clients[this.turnIdx].id !== sender) {
       this.isPacketRecieved = false
       const packet = new errorPacket(this, 'ERROR: not your turn')
@@ -340,6 +340,7 @@ export default class GameRoom {
 
   initPlayers(clients) {
     for (const client of clients) {
+      console.log(client)
       const player = new Player(client)
 
       this.players[client.socket.id] = player

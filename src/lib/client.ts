@@ -17,11 +17,13 @@ export default class Client {
   constructor(socket, nickname) {
     this.socket = socket
     this.nickname = nickname
+    this.coin = 100
     this.state = CLIENT_STATE.IDLE
   }
 
   getUser() {
     const response = {
+      id: this.socket.id,
       nickname: this.nickname,
       coin: this.coin,
     }

@@ -36,7 +36,7 @@ export default class GameServer {
     
     this.clients[socket.id] = client
 
-    return client
+    return client.getUser()
   }
 
   // leave the game
@@ -54,7 +54,7 @@ export default class GameServer {
   // matching join
   joinMatchQueue(socket) {
     if (this.clients[socket.id].state !== CLIENT_STATE.IDLE) {
-      socket.emit('serverError', 'ERROR: already started game')
+      socket.emit('serverError', 'ERROR: already joined user')
       return
     }
 
@@ -66,7 +66,7 @@ export default class GameServer {
 
   // update matching
   updateMatchMaking() {
-    const matchedGroupCnt = this.matchQueue.length / 2
+    const matchedGroupCnt = Math.floor(this.matchQueue.length / 2)
     for (let i = 0; i < matchedGroupCnt; i += 1) {
       const matchedGroup = this.matchQueue.splice(0, 2)
       const roomCode = uuid.v4().substring(0, 8)
@@ -102,8 +102,8 @@ export default class GameServer {
   }
 
   startup(io) {
-    // broadcast balls state
-    setInterval(() => this.updateMatchMaking(), 100)
+    // matching scheduler
+    setInterval(() => this.updateMatchMaking(), 3000)
   }
   
 }

@@ -31,12 +31,16 @@ const connectionHandler = (socket: socketio.Socket) => {
   socket.on('disconnect', (reason) => {
     console.log(`${socket.id} has leaved: (${reason})`)
 
+    // TODO: game room check
+
     gameServer.leave(socket)
   })
 
   // login
   socket.on('login', (nickname) => {
-    gameServer.login(socket, nickname)
+    console.log('login / ', socket.id)
+    const client = gameServer.login(socket, nickname)
+    socket.emit('login', client)
   })
 
   // leave game
