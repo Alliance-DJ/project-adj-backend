@@ -1,0 +1,91 @@
+<!-- HTML for static distribution bundle build -->
+<!DOCTYPE html>
+<body>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+  <div>
+    <input type="button" value="login" id="login">
+    <input type="button" value="match" id="match">
+    <input type="button" value="ready" id="ready">
+  </div>
+
+  <script>
+    let roomCode = ''
+    let stateCode = 0
+    let roomState = ''
+
+    const packet = {
+      roomCode: '',
+      stateCode: 0,
+      type: '',
+      params: {},
+    }
+
+    let client = {}
+    const socket = io('ws://localhost:4001')
+
+    const loginBtn = document.getElementById('login')
+    const matchBtn = document.getElementById('match')
+    const readyBtn = document.getElementById('ready')
+    
+    loginBtn.addEventListener('click', () => {
+      socket.emit('login', 'kinggodhoon')
+    })
+
+    matchBtn.addEventListener('click', () => {
+      socket.emit('matchMaking', '')
+    })
+
+    readyBtn.addEventListener('click', () => {
+      packet.stateCode += 1
+      packet.type = 'ready'
+      packet.stateCode += 1
+      
+      socket.emit('ready', packet)
+    })
+
+    socket.on('connect', () => {
+      console.log('connected!')
+    })
+
+    socket.on('login', data => {
+      client = data
+      console.log(client)
+    })
+
+    socket.on('matched', roomCode => {
+      packet.roomCode = roomCode
+      console.log('matched')
+    })
+
+    socket.on(`${roomCode}#stateHeartbeat`, data => {
+      stateCode = data
+    })
+
+    socket.on(`${roomCode}#game`, data => {
+      if (data.roomCode !== roomCode) {
+        console.log('invaild data')
+        return
+      }
+
+      switch (data.type) {
+        case 'ready':
+          console.log('ready!')
+          roomState = 'ready'
+          break
+        case 'playing':
+          console.log('playing!')
+          roomState = 'playing'
+          break
+        case 'finish':
+          console.log('finish!')
+          roomState = 'finish'
+          break
+      }
+    })
+
+    socket.on(`${roomCode}#round`, data => {
+      console.log('roundPacket', data)
+    })
+  </script>
+
+</html>

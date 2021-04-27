@@ -61,6 +61,10 @@ export default class GameRoom {
   stateTick: any
 
   constructor(roomCode, clients) {
+    for (const client of clients) {
+      client.socket.emit('matched', roomCode)
+    }
+
     this.gameServer = GameServer.getInstance()
 
     this.clients = clients
@@ -84,12 +88,12 @@ export default class GameRoom {
     this.isPacketRecieved = false
 
     // game ready state packet send
-    const packet = new gamePacket(this, ROOM_STATE_CODE.PLAYING)
+    const packet = new gamePacket(this, ROOM_STATE_CODE.READY)
     for (const playerId of Object.keys(this.players)) {
       this.sendPacket(playerId, SOCKET_CHANNEL.GAME, packet)
     }
 
-    this.stateTick = setInterval(() => this.stateHeartbeat(), 100)
+    this.stateTick = setInterval(() => this.stateHeartbeat(), 300)
   }
 
 
@@ -323,12 +327,12 @@ export default class GameRoom {
   }
 
   sendPacket(playerId, channel, packet) {
-    this.players[playerId].client.socket.emit(channel, packet)
+    this.players[playerId].client.socket.emit(`${this.roomCode}#${channel}`, packet)
   }
 
   stateHeartbeat() {
     for (const client of this.clients) {
-      client.socket.emit('stateHeartbeat', this.stateCode)
+      client.socket.emit(`${this.roomCode}#stateHeartbeat`, this.stateCode)
     }
   }
 
@@ -340,7 +344,6 @@ export default class GameRoom {
 
   initPlayers(clients) {
     for (const client of clients) {
-      console.log(client)
       const player = new Player(client)
 
       this.players[client.socket.id] = player

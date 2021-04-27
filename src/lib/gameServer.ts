@@ -15,6 +15,7 @@ export default class GameServer {
   rooms: Object
   matchQueue: Client[]
 
+  matchTimer: any
 
   private constructor() {
     this.clients = {}
@@ -68,21 +69,13 @@ export default class GameServer {
   updateMatchMaking() {
     const matchedGroupCnt = Math.floor(this.matchQueue.length / 2)
     for (let i = 0; i < matchedGroupCnt; i += 1) {
+      // room info
       const matchedGroup = this.matchQueue.splice(0, 2)
       const roomCode = uuid.v4().substring(0, 8)
+
+      // create room
       const room = new GameRoom(roomCode, matchedGroup)
-
       this.rooms[roomCode] = room
-
-      const data = {
-        roomCode,
-        clients: matchedGroup,
-      }
-      for (const client of matchedGroup) {
-        client.state = CLIENT_STATE.PLAYING
-
-        client.socket.emit('matched', data)
-      }
     }
   }
 
@@ -101,9 +94,9 @@ export default class GameServer {
     socket.emit('user', this.clients[socket.id].getUser())
   }
 
-  startup(io) {
+  startup() {
     // matching scheduler
-    setInterval(() => this.updateMatchMaking(), 3000)
+    this.matchTimer = setInterval(() => this.updateMatchMaking(), 3000)
   }
   
 }

@@ -17,7 +17,7 @@ httpServer.listen(4001, () => {
 })
 
 const gameServer = GameServer.getInstance()
-gameServer.startup(io)
+gameServer.startup()
 
 io.on('connection', (socket) => {
   connectionHandler(socket)
@@ -38,6 +38,7 @@ const connectionHandler = (socket: socketio.Socket) => {
 
   // login
   socket.on('login', (nickname) => {
+    // TODO: dup login check
     console.log('login / ', socket.id)
     const client = gameServer.login(socket, nickname)
     socket.emit('login', client)
@@ -52,6 +53,7 @@ const connectionHandler = (socket: socketio.Socket) => {
 
   // join matching queue
   socket.on('matchMaking', () => {
+    console.log('matchMaking / ', socket.id)
     gameServer.joinMatchQueue(socket)
   })
 
